@@ -19,7 +19,6 @@ export function Question({
 }: QuestionProps) {
   return (
     <div 
-      // className={`question ${isAnswered ? 'answered' : ''} ${isHighlighted ? 'highlighted' : ''}`}
       className={cx(
         'question',
         { answered: isAnswered },

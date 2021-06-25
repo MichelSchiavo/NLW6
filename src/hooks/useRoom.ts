@@ -31,6 +31,7 @@ type QuestionParams = {
 export function useRoom(roomId: string) {
   const [ questions, setQuestions ] = useState<QuestionParams[]>([]);
   const [ title, setTitle ] = useState('');
+  const [ roomAdmin, setRoomAdmin ] = useState('');
   const { user } = useAuth();
 
   useEffect(() => {
@@ -48,11 +49,12 @@ export function useRoom(roomId: string) {
           isHighlighted: value.isHighlighted,
           isAnswered: value.isAnswered,
           likeCount: Object.values(value.likes ?? {}).length,
-          likeId: Object.entries(value.likes ?? {}).find(([key, like]) => like.authorId === user?.id)?.[0]
+          likeId: Object.entries(value.likes ?? {}).find(([key, like]) => like.authorId === user?.id)?.[0],
         }
       });
       setTitle(databaseRoom.title);
       setQuestions(parsedQuestions);
+      setRoomAdmin(databaseRoom.authorId)
     })
 
     return () => {
@@ -60,5 +62,5 @@ export function useRoom(roomId: string) {
     }
   }, [roomId, user?.id]);
 
-  return { questions, title }
+  return { questions, title, roomAdmin }
 }

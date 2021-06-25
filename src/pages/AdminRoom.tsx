@@ -12,21 +12,22 @@ import { useRoom } from '../hooks/useRoom';
 
 import '../styles/room.scss';
 import { database } from '../services/firebase';
+import { useAuth } from '../hooks/useAuth';
 
 type RoomParams = {
   id: string;
 }
 
 export function AdminRoom() {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const history = useHistory();
   const params = useParams<RoomParams>();
   const roomId = params.id;
 
-  const { title, questions } = useRoom(roomId);
+  const { title, questions, roomAdmin } = useRoom(roomId);
 
   async function handleEndRoom() {
-    await database.ref(`rooms/${roomId}`).update({
+    await database.ref(`rooms/${roomId}/author`).update({
       endedAt: new Date()
     });
 
@@ -51,8 +52,9 @@ export function AdminRoom() {
     });
   }
 
-  return (
-    <div id="page-room">
+  if (user?.id === roomAdmin) {
+    return (
+      <div id="page-room">
       <header>
         <div className="content">
           <img src={logoImg} alt="Letmeask" />
@@ -108,5 +110,8 @@ export function AdminRoom() {
 
       </main>
     </div>
-  )
+    )
+  } else {
+    return null
+  }
 }
